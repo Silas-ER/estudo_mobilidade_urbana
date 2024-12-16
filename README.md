@@ -2,13 +2,11 @@
 
 <ol>
     <li>
-        <p>
-            <ul>
-                <li>Criar o ambiente virtual com virtualenv<li>
-                <li>virtualenv env<li>
-                <li>env\Scripts\activate<li>
-            </ul>
-        </p>
+        <ul>
+            <li>Criar o ambiente virtual com virtualenv<li>
+            <li>virtualenv env<li>
+            <li>env\Scripts\activate<li>
+        </ul>
     </li>
     <li>
         <p>
