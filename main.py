@@ -68,12 +68,48 @@ st.markdown("""
             </ul>
             <br>
             """, unsafe_allow_html=True)
+st.divider()
 
-# Sidebar (Filtros)
-st.sidebar.title('Filtros')
-st.sidebar.selectbox('Ano', df_bilhetagem_geral['Ano'].unique())
-st.sidebar.selectbox('Empresa', df_bilhetagem_geral['Empresa'].unique())
-st.sidebar.selectbox('Linha', df_bilhetagem_geral['Linha'].unique())
+# Análise dos dados
+st.markdown('### Análise inicial dos dados')
+st.markdown("""
+                <p>
+                    Inicicialmente buscamos padronizar as colunas dos dados, que foram recebidos em 5 arquivos csv distintos e 
+                    com padrões diferentes.
+                    <br>
+                    Após a padronização, renomeamos alguns itens que tinham acentos que fugiam do padrão utilizado para exibição.
+                    <br>
+                    Por fim, criamos e realizamos a conversão da coluna 'Mes_Ano' para o formato de data, para facilitar a análise temporal.
+                    E concatenamos todos os dataframes em um único dataframe para facilitar a análise no geral.
+                </p>
+            """, unsafe_allow_html=True)
+st.divider()
+
+col1, col2 = st.columns([0.5, 1.5])
+with col1: 
+    st.markdown("""
+                <p>
+                    Utilizando o método <code>.isnull()</code> e <code>.sum()</code> 
+                    conseguimos identificar a quantidade de valores nulos em cada coluna.
+                </p>
+                """, unsafe_allow_html=True)
+    st.write(df_bilhetagem_geral.isnull().sum())
+with col2: 
+    st.markdown("""
+                <p>
+                    Utilizando o método <code>.describe()</code> para obter as estatisticas sobre as colunas.
+                    Com isso, podemos ver que: 
+                    <ul>
+                        <li>o dataframe contém 4.734 linhas em 14 colunas númericas. Além da média e desvio padrão dessas colunas.</li>
+                        <li>o valor mínimo de viagens é 1 e o máximo é 6.080.</li>
+                        <li>Além disso, os valores minimos e maximos por categoria de passagem</li>
+                        <li>Por fim, os quartis de valor!</li>
+                    </ul>
+                </p>
+            """, unsafe_allow_html=True)
+    st.markdown('')
+    st.write(df_bilhetagem_geral.describe())   
+st.divider()
 
 # Análise Temporal
 st.markdown('### Análise temporal de uso')
@@ -88,6 +124,7 @@ st.markdown("""
 
 col1, col2 = st.columns([1.1, 0.9])
 with col1:
+    ##df_bilhetagem_geral.groupby('Mes_Ano')['Qtd_Viagens'].sum().st.pyplot(kind='line', title='Total de Viagens por Mês/Ano')
     plot_line_chart(df_bilhetagem_geral)
 
 # Análise Comparativa
