@@ -56,10 +56,12 @@ st.markdown("""
             da Prefeitura do Natal.
             <br><br>
         """, unsafe_allow_html=True)
+st.divider()
+
 st.markdown("""
-            Objetivo Principal: Entender padrões e tendências de mobilidade urbana em Natal/RN.
+            <h5>Objetivo Principal:</h5> Entender padrões e tendências de mobilidade urbana em Natal/RN.
             <br>
-            Objetivos Secundários:
+            <h5>Objetivos Secundários:</h5>
             <ul>
                 <li>Padrões de uso do transporte público ao longo do tempo: Como o número de viagens e os tipos de bilhetagem variaram ao longo dos anos e meses?</li>
                 <li>Impacto da gratuidade e das integrações: Qual o efeito das tarifas gratuitas e integrações nos padrões de uso?</li>
@@ -182,4 +184,3 @@ if periodo1 != periodo2:
 else:
     st.warning("Selecione dois períodos diferentes para comparar.")
     
-print(df_bilhetagem_geral.columns)
