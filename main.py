@@ -178,6 +178,7 @@ st.markdown("""
                 agrupando pela coluna 'Mes_Ano' criada durante a limpeza e raspagem de dados.
                 <br>
                 Com isso, optamos por fazer um gráfico de linhas que expressaria da melhor forma a variação das viagens durante o tempo.
+                <br>
             </p>
             """, unsafe_allow_html=True)
 
@@ -193,6 +194,7 @@ st.markdown("""
                 afim de descobrir os tipos de clientes das linhas.
                 <br>
                 Para tal optamos por um gráfico de barras comparando os tipos de bilhetagem armazenadas no dataframe.
+                <br>
             </p>
             """, unsafe_allow_html=True)
 
@@ -208,6 +210,7 @@ st.markdown("""
                 Filtramos também ordenando pelas top 10 linhas com maior quantidade de viagens, presumindo que essas são as com maiores demandas perante os usuários!
                 <br>
                 Com isso, optamos por fazer um gráfico de barras, mostrando os maiores quantidade de viagens por linha.
+                <br>
             </p>
             """, unsafe_allow_html=True)
 
@@ -221,6 +224,7 @@ st.markdown("""
                 Nesse caso optamos por fazer a análise de dados focada na quantidade de viagens por empresa apurando assim qual empresa teria maior impacto na mobilidade urbana.
                 <br>
                 Mantemos a ideia de um gráfico de barras que expressaria da melhor forma a variação das viagens por empresa.
+                <br>
             </p>
             """, unsafe_allow_html=True)
 
