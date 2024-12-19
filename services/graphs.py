@@ -74,34 +74,3 @@ def plot_top_empresas(df):
     ax.xaxis.set_major_formatter(formatter)
 
     st.pyplot(plt)
-
-# Função para análise comparativa entre períodos
-def plot_comparacao_empresas(df, periodo1, periodo2):
-    df_periodo1 = df[df['Mes_Ano'] == periodo1].groupby('Empresa')['Qtd_Viagens'].sum().reset_index()
-    df_periodo1['Periodo'] = periodo1
-
-    df_periodo2 = df[df['Mes_Ano'] == periodo2].groupby('Empresa')['Qtd_Viagens'].sum().reset_index()
-    df_periodo2['Periodo'] = periodo2
-
-    df_comparacao = pd.concat([df_periodo1, df_periodo2])
-
-    plt.figure(figsize=(12, 6))
-    sns.barplot(data=df_comparacao, x='Empresa', y='Qtd_Viagens', hue='Periodo', palette='viridis')
-    plt.title('Comparação do Volume de Viagens Entre Empresas')
-    plt.xlabel('Empresas')
-    plt.ylabel('Quantidade de Viagens')
-    plt.xticks(rotation=45)
-    st.pyplot(plt)
-    
-# Função para análise sazonal por linha
-def plot_sazonalidade_por_linha(df, linha_selecionada):
-    df_linha = df[df['Linha'] == linha_selecionada]
-    df_temp = df_linha.groupby('Mes_Ano')['Qtd_Viagens'].sum().reset_index()
-    
-    plt.figure(figsize=(12, 6))
-    sns.lineplot(data=df_temp, x='Mes_Ano', y='Qtd_Viagens', marker='o', color='royalblue')
-    plt.title(f'Volume de Viagens da Linha {linha_selecionada} ao Longo do Tempo')
-    plt.xlabel('Tempo (Mes/Ano)')
-    plt.ylabel('Quantidade de Viagens')
-    plt.xticks(rotation=45)
-    st.pyplot(plt)

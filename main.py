@@ -1,7 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from services.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_top_linhas, plot_top_empresas, plot_comparacao_empresas, plot_sazonalidade_por_linha
+import seaborn as sns
+from services.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_top_linhas, plot_top_empresas
+import matplotlib.pyplot as plt
 
 # Carregamento de dados
 df = {}
@@ -62,7 +64,8 @@ st.markdown("""
 st.divider()
 
 st.markdown("""
-            <h5>Objetivo Principal:</h5> Entender padrões e tendências de mobilidade urbana em Natal/RN.
+            <h5>Objetivo Principal:</h5> 
+            <p>Entender padrões e tendências de mobilidade urbana em Natal/RN.</p>
             <br>
             <h5>Objetivos Secundários:</h5>
             <ul>
@@ -90,6 +93,7 @@ st.markdown("""
             """, unsafe_allow_html=True)
 st.divider()
 
+# Verficando os dados nulos e estatísticas descritivas
 col1, col2 = st.columns([0.5, 1.5])
 with col1: 
     st.markdown("""
@@ -98,7 +102,8 @@ with col1:
                     conseguimos identificar a quantidade de valores nulos em cada coluna.
                 </p>
                 """, unsafe_allow_html=True)
-    st.write(df_bilhetagem_geral.isnull().sum())
+    st.write(df_bilhetagem_geral.isnull().sum()) # Verificação de valores nulos
+    
 with col2: 
     st.markdown("""
                 <p>
@@ -113,7 +118,56 @@ with col2:
                 </p>
             """, unsafe_allow_html=True)
     st.markdown('')
-    st.write(df_bilhetagem_geral.describe())   
+    st.write(df_bilhetagem_geral.describe()) # Estatísticas descritivas  
+    
+# Análise de correlação e outliers
+col1, col2 = st.columns([1, 1]) 
+# Correlção de variáveis
+with col1: 
+    st.markdown("""
+                <h5>Correlação de variáveis</h5>
+                <p>
+                    Utilizando o método <code>.corr()</code> com as colunas que possuem valores inteiros e floats
+                    conseguimos criar um heatmap com os valores de correlação entre as colunas.
+                    <br>
+                    <ul>
+                        <li>Sendo 1 uma correlação perfeita, quando uma variável aumenta a outra também aumenta;</li>
+                        <li>0 uma correlação nula, quando uma variável aumenta a outra não é afetada;</li>
+                        <li>-1 uma correlação negativa, quando uma variável aumenta a outra diminui.</li>
+                    </ul>
+                </p>
+                """, unsafe_allow_html=True)
+    plt.figure(figsize=(10, 7.5))
+    numeric_cols = df_bilhetagem_geral.select_dtypes(include=['float64', 'int64'])
+    numeric_cols = numeric_cols.drop(columns=['Ano','Mes'])
+    matriz_correlacao = numeric_cols.corr()
+    heatmap = sns.heatmap(matriz_correlacao, annot=True, cmap='coolwarm', fmt='.2f')
+    plt.title("Heatmap de Correlação", fontsize=18)
+    st.pyplot(plt.gcf())  
+
+# Outliers de viagens     
+with col2:
+    st.markdown("""
+                <h5>Outliers de viagens</h5>
+                <p>
+                    Afim de observar a presença de outliers na coluna 'Qtd_Viagens' optamos por fazer um boxplot.
+                    <br>
+                    <ul>
+                        <li>A partir dele observamos que o valor limite inferior de viagens é o 0 e o limite superior é na casa dos 4.500.</li>
+                        <li>Também podemos ver que o primeiro quartil está na casa das 500 viagens, segundo quartil (mediana) está na casa dos 1.200 ~ viagens e 
+                    o terceiro quartil por volta das 2.200 viagens.</li>
+                        <li>Também podemos observar a presença de outliers, que são os pontos fora do limite superior e inferior. Numa quantidade significativa e 
+                    que devem ser descartados ou avaliados a partir de datas específicas para escolha de manter ou não na análise.</li>
+                    </ul>
+                </p>
+                """, unsafe_allow_html=True)
+    plt.figure(figsize=(4, 2))
+    boxplot = sns.boxplot(data=df_bilhetagem_geral, x='Qtd_Viagens')
+    plt.title("Distribuição de Qtd_Viagens", fontsize=12)
+    plt.xlabel("Quantidade de Viagens", fontsize=8)
+    plt.ylabel("Densidade", fontsize=8)
+    st.pyplot(plt.gcf())
+    
 st.divider()
 
 # Análise Temporal
@@ -128,8 +182,7 @@ st.markdown("""
             """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1.1, 0.9])
-with col1:
-    plot_line_chart(df_bilhetagem_geral)
+with col1: plot_line_chart(df_bilhetagem_geral)
 
 # Análise Comparativa
 st.markdown('### Análise dos tipos de bilhetagem')
@@ -143,8 +196,7 @@ st.markdown("""
             """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1.1, 0.9])
-with col1:
-    plot_bilhetagem_comparativa(df_bilhetagem_geral)
+with col1: plot_bilhetagem_comparativa(df_bilhetagem_geral)
 
 st.markdown('### Análise de volumes de viagem por linha')
 st.markdown("""
@@ -158,8 +210,7 @@ st.markdown("""
             """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1.1, 0.9])
-with col1:
-    plot_top_linhas(df_bilhetagem_geral)
+with col1: plot_top_linhas(df_bilhetagem_geral)
 
 st.markdown('### Análise de volume de viagens por empresa')
 st.markdown("""
@@ -171,5 +222,4 @@ st.markdown("""
             """, unsafe_allow_html=True)
 
 col1, col2 = st.columns([1.1, 0.9])
-with col1:
-    plot_top_empresas(df_bilhetagem_geral)
+with col1: plot_top_empresas(df_bilhetagem_geral)
