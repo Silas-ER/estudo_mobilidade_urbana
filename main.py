@@ -118,7 +118,8 @@ with col2:
                 </p>
             """, unsafe_allow_html=True)
     st.markdown('')
-    st.write(df_bilhetagem_geral.describe()) # Estatísticas descritivas  
+    df_to_describe = df_bilhetagem_geral.drop(columns=['Ano', 'Mes', 'Linha'])
+    st.write(df_to_describe.describe()) # Estatísticas descritivas  
     
 # Análise de correlação e outliers
 col1, col2 = st.columns([1, 1]) 
