@@ -5,32 +5,35 @@ from services.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_t
 
 # Carregamento de dados
 df = {}
-
 ano_df = 2018
 
+# Laço para carregar os dados de 2018, 2019 e 2020 que tem as mesmas características
 for i in range(3):
     df[ano_df] = pd.read_csv(f"data/01-dados-be-{ano_df}-analitico.csv", encoding='latin1', sep=';')
     ano_df += 1
-
+# Carregamento dos dados de 2021 e 2022 que tem características diferentes dos demais
 df[2021] = pd.read_csv("data/01-dados-be-2021-analitico.csv")
 df[2022] = pd.read_csv("data/01-dados-be-2022-analitico.csv", encoding='latin1', sep=',')
 
+# Renomeação de colunas para padronização
 df[2018].rename(columns={'Mês': 'Mes'}, inplace=True)
 df[2019].rename(columns={'Mês': 'Mes'}, inplace=True)
 df[2021].rename(columns={'Mês': 'Mes'}, inplace=True)
 
 ano_df = 2018
 
+# Lão para adicionar a coluna de ano para identificação quando concatenar os dataframes
 for i in range(len(df)):
     df[ano_df]['Ano'] = ano_df
     ano_df += 1
 
+# Concatenação dos dataframes
 dfs_bilhetagem = [df[2018], df[2019], df[2020], df[2021], df[2022]]
 df_bilhetagem_geral = pd.concat(dfs_bilhetagem, ignore_index=True)
-df_bilhetagem_geral['Empresa'] = df_bilhetagem_geral['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO')
 
-# Conversão de colunas 
-df_bilhetagem_geral['Mes_Ano'] = df_bilhetagem_geral['Mes'].astype(str) + '/' + df_bilhetagem_geral['Ano'].astype(str)
+# Manipulação de dados
+df_bilhetagem_geral['Empresa'] = df_bilhetagem_geral['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO') # Correção de acentuação
+df_bilhetagem_geral['Mes_Ano'] = df_bilhetagem_geral['Mes'].astype(str) + '/' + df_bilhetagem_geral['Ano'].astype(str) # Criação de coluna Mes_Ano
 
 # Viagens por mês/ano
 viagens_por_mes = df_bilhetagem_geral.groupby('Mes_Ano')['Qtd_Viagens'].sum().reset_index()
@@ -63,10 +66,10 @@ st.markdown("""
             <br>
             <h5>Objetivos Secundários:</h5>
             <ul>
-                <li>Padrões de uso do transporte público ao longo do tempo: Como o número de viagens e os tipos de bilhetagem variaram ao longo dos anos e meses?</li>
-                <li>Impacto da gratuidade e das integrações: Qual o efeito das tarifas gratuitas e integrações nos padrões de uso?</li>
-                <li>Análise de sazonalidade: Existem períodos do ano (meses) com maior ou menor número de viagens?</li>
-                <li>Distribuição do uso por linhas e empresas: Quais linhas ou empresas são mais utilizadas e em quais meses?</li>
+                <li>Investigar a estrutura, características e qualidade dos dados;</li>
+                <li>Identificar padrões, tendências, outliers e relações entre variáveis;</li>
+                <li>Gerar informações relevantes e aplicáveis a partir da base de dados;</li>
+                <li>Aplicar ferramentas e métodos aprendidos na disciplina para manipulação e visualização de dados.</li>
             </ul>
             <br>
             """, unsafe_allow_html=True)
@@ -126,7 +129,6 @@ st.markdown("""
 
 col1, col2 = st.columns([1.1, 0.9])
 with col1:
-    ##df_bilhetagem_geral.groupby('Mes_Ano')['Qtd_Viagens'].sum().st.pyplot(kind='line', title='Total de Viagens por Mês/Ano')
     plot_line_chart(df_bilhetagem_geral)
 
 # Análise Comparativa
@@ -171,16 +173,3 @@ st.markdown("""
 col1, col2 = st.columns([1.1, 0.9])
 with col1:
     plot_top_empresas(df_bilhetagem_geral)
-
-# Filtro para selecionar a linha
-linha_escolhida = st.selectbox('Selecione uma Linha:', df_bilhetagem_geral['Linha'].unique())
-plot_sazonalidade_por_linha(df_bilhetagem_geral, linha_escolhida)
-
-periodo1 = st.selectbox('Selecione o Primeiro Período:', df_bilhetagem_geral['Mes_Ano'].unique(), key='p1')
-periodo2 = st.selectbox('Selecione o Segundo Período:', df_bilhetagem_geral['Mes_Ano'].unique(), key='p2')
-
-if periodo1 != periodo2:
-    plot_comparacao_empresas(df_bilhetagem_geral, periodo1, periodo2)
-else:
-    st.warning("Selecione dois períodos diferentes para comparar.")
-    
