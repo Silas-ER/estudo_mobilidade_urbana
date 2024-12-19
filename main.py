@@ -58,7 +58,7 @@ st.markdown("""
             valor arrecadado, entre outras informações.
             <br>
             Os dados utilizados para construção desta análise foram obtidos através do portal de <a href='http://dados.natal.br/dataset'>dados abertos</a> 
-            da Prefeitura do Natal.
+            da Prefeitura do Natal e abrangem de 2018 a 2022.
             <br><br>
         """, unsafe_allow_html=True)
 st.divider()
@@ -120,7 +120,8 @@ with col2:
     st.markdown('')
     df_to_describe = df_bilhetagem_geral.drop(columns=['Ano', 'Mes', 'Linha'])
     st.write(df_to_describe.describe()) # Estatísticas descritivas  
-    
+st.divider()  
+
 # Análise de correlação e outliers
 col1, col2 = st.columns([1, 1]) 
 # Correlção de variáveis
@@ -140,7 +141,7 @@ with col1:
                 """, unsafe_allow_html=True)
     plt.figure(figsize=(10, 7.5))
     numeric_cols = df_bilhetagem_geral.select_dtypes(include=['float64', 'int64'])
-    numeric_cols = numeric_cols.drop(columns=['Ano','Mes'])
+    numeric_cols = numeric_cols.drop(columns=['Ano', 'Mes', 'Linha'])
     matriz_correlacao = numeric_cols.corr()
     heatmap = sns.heatmap(matriz_correlacao, annot=True, cmap='coolwarm', fmt='.2f')
     plt.title("Heatmap de Correlação", fontsize=18)
