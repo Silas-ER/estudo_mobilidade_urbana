@@ -183,6 +183,7 @@ st.markdown("""
 
 col1, col2 = st.columns([1.1, 0.9])
 with col1: plot_line_chart(df_bilhetagem_geral)
+st.divider()
 
 # Análise Comparativa
 st.markdown('### Análise dos tipos de bilhetagem')
@@ -197,6 +198,7 @@ st.markdown("""
 
 col1, col2 = st.columns([1.1, 0.9])
 with col1: plot_bilhetagem_comparativa(df_bilhetagem_geral)
+st.divider()
 
 st.markdown('### Análise de volumes de viagem por linha')
 st.markdown("""
@@ -211,6 +213,7 @@ st.markdown("""
 
 col1, col2 = st.columns([1.1, 0.9])
 with col1: plot_top_linhas(df_bilhetagem_geral)
+st.divider()
 
 st.markdown('### Análise de volume de viagens por empresa')
 st.markdown("""
