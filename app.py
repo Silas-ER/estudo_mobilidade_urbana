@@ -11,6 +11,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed",   
 )
 
+# Abas para explicações e insights
+explicacao_dados, insights = st.tabs()
+
 # Construção da Página
 st.title('Mobilidade Urbana - Natal/RN')
 st.divider()
