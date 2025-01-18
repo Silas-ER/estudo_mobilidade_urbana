@@ -1,9 +1,12 @@
 
 import streamlit as st
-
+from modules.visualizer import DataVisualizer
 
 # Página de explicações dos dados
 def content_data(df):
+
+    DataVisualizer(df) # Instanciando a classe DataVisualizer
+
     st.title('Mobilidade Urbana - Natal/RN')
     st.divider()
 
@@ -95,13 +98,8 @@ def content_data(df):
                         </ul>
                     </p>
                     """, unsafe_allow_html=True)
-        plt.figure(figsize=(10, 7.5))
-        numeric_cols = df_bilhetagem_geral.select_dtypes(include=['float64', 'int64'])
-        numeric_cols = numeric_cols.drop(columns=['Ano', 'Mes', 'Linha'])
-        matriz_correlacao = numeric_cols.corr()
-        heatmap = sns.heatmap(matriz_correlacao, annot=True, cmap='coolwarm', fmt='.2f')
-        plt.title("Heatmap de Correlação", fontsize=18)
-        st.pyplot(plt.gcf())  
+
+        st.pyplot(DataVisualizer.plot_heatmap)  
 
     # Outliers de viagens     
     with col2:
@@ -119,11 +117,7 @@ def content_data(df):
                         </ul>
                     </p>
                     """, unsafe_allow_html=True)
-        plt.figure(figsize=(4, 2))
-        boxplot = sns.boxplot(data=df_bilhetagem_geral, x='Qtd_Viagens')
-        plt.title("Distribuição de Qtd_Viagens", fontsize=12)
-        plt.xlabel("Quantidade de Viagens", fontsize=8)
-        plt.ylabel("Densidade", fontsize=8)
-        st.pyplot(plt.gcf())
+
+        st.pyplot(DataVisualizer.plot_boxplot)
         
     st.divider()

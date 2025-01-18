@@ -14,11 +14,11 @@ st.set_page_config(
 )
 
 # Abas para explicações e insights
-explicacao_dados, insights = st.tabs()
+tab_explicacao_dados, tab_insights = st.tabs(['Data Overview', 'Insights'])
 
-with explicacao_dados:
+with tab_explicacao_dados:
     content_data(DataLoader.load_data)
 
-with insights:
+with tab_insights:
     insights(DataLoader.load_data)
     
