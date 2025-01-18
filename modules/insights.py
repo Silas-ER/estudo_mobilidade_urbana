@@ -32,7 +32,7 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        plot_bilhetagem_comparativa(df_bilhetagem_geral)
+        st.pyplot(DataVisualizer.plot_bilhetagem_comparativa)
     st.markdown('### Análise de volumes de viagem por linha')
     st.markdown("""
                 <p>
@@ -45,7 +45,7 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        plot_top_linhas(df_bilhetagem_geral)
+        st.pyplot(DataVisualizer.plot_bilhetagem_geral)
     st.markdown('### Análise de volume de viagens por empresa')
     st.markdown("""
                 <p>
@@ -56,4 +56,4 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        plot_top_empresas(df_bilhetagem_geral)
+        st.pyplot(DataVisualizer.plot_top_empresas)
