@@ -7,7 +7,10 @@ class DataAnalyzer:
         # Padronizar a empresa CONCEIÇÃO
         self.df['Empresa'] = self.df['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO') 
         # Criar coluna Mes_Ano
-        self.df['Mes_Ano'] = self.df['Mes'] + '/' + self.df['Ano'].astype(str)
+        self.df['Mes'] = self.df['Mes'].astype(str)
+        self.df['Ano'] = self.df['Ano'].astype(str)
+        
+        self.df['Mes_Ano'] = self.df['Mes'] + '/' + self.df['Ano']
     
     def viagens_mes(self):
         # Retorna a quantidade de viagens por mes/ano

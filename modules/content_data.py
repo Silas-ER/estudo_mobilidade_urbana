@@ -1,14 +1,12 @@
 
 import streamlit as st
 from modules.visualizer import DataVisualizer
+import pandas as pd
 
 # Página de explicações dos dados
 def content_data(df):
 
-    DataVisualizer(df) # Instanciando a classe DataVisualizer
-
-    st.title('Mobilidade Urbana - Natal/RN')
-    st.divider()
+    visualizer = DataVisualizer(df) # Instanciando a classe DataVisualizer
 
     st.markdown('## Bilhetagem Eletrônica')
     st.markdown("""
@@ -20,8 +18,6 @@ def content_data(df):
                 da Prefeitura do Natal e abrangem de 2018 a 2022.
                 <br><br>
             """, unsafe_allow_html=True)
-    st.divider()
-
     st.markdown("""
                 <h5>Objetivo Principal:</h5> 
                 <p>Entender padrões e tendências de mobilidade urbana em Natal/RN.</p>
@@ -99,7 +95,7 @@ def content_data(df):
                     </p>
                     """, unsafe_allow_html=True)
 
-        st.pyplot(DataVisualizer.plot_heatmap)  
+        st.pyplot(visualizer.plot_heatmap())  
 
     # Outliers de viagens     
     with col2:
@@ -118,6 +114,6 @@ def content_data(df):
                     </p>
                     """, unsafe_allow_html=True)
 
-        st.pyplot(DataVisualizer.plot_boxplot)
+        st.pyplot(visualizer.plot_boxplot())
         
     st.divider()

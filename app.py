@@ -13,12 +13,21 @@ st.set_page_config(
     initial_sidebar_state="collapsed",   
 )
 
+# Instanciando as classes
+data_loader = DataLoader()
+df = data_loader.load_data()
+
+data_analyzer = DataAnalyzer(df)
+data_analyzer.clean_data()
+
+st.title('Mobilidade Urbana - Natal/RN')
+
 # Abas para explicações e insights
 tab_explicacao_dados, tab_insights = st.tabs(['Data Overview', 'Insights'])
 
 with tab_explicacao_dados:
-    content_data(DataLoader.load_data)
+    content_data(df)
 
 with tab_insights:
-    insights(DataLoader.load_data)
+    insights(df)
     

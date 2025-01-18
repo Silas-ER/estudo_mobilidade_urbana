@@ -10,14 +10,16 @@ class DataVisualizer:
     
     def plot_heatmap(self):
         plt.figure(figsize=(10, 7.5))
-        
-        numeric_cols = self.df.select_dtypes(include=['float64', 'int64'])
-        numeric_cols = numeric_cols.drop(columns=['Ano', 'Mes', 'Linha'])
-        matriz_correlacao = numeric_cols.corr()
-        
-        heatmap = sns.heatmap(matriz_correlacao, annot=True, cmap='coolwarm', fmt='.2f')
-        plt.title("Heatmap de Correlação", fontsize=18)
 
+        numeric_cols = self.df.select_dtypes(include=['float64', 'int64']) # Selecionar colunas numéricas
+        cols_to_drop = ['Ano', 'Mes', 'Linha'] 
+        existing_cols = [col for col in cols_to_drop if col in numeric_cols.columns] # Remover apenas as colunas que estão presentes no DataFrame
+        numeric_cols = numeric_cols.drop(columns=existing_cols)
+
+        # Criando matriz de correlação
+        matriz_correlacao = numeric_cols.corr()
+        sns.heatmap(matriz_correlacao, annot=True, cmap="coolwarm", fmt='.2f')
+        plt.title("Heatmap de Correlação", fontsize=18)
         return plt.gcf()
     
     def plot_boxplot(self):

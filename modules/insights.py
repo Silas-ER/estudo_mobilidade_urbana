@@ -1,10 +1,10 @@
 
 import streamlit as st
-from modules import DataVisualizer
+from modules.visualizer import DataVisualizer
 
 def insights(df):
 
-    DataVisualizer(df)
+    visualizer = DataVisualizer(df)
 
     # Analise Temporal
     st.markdown('### Análise temporal de uso')
@@ -18,7 +18,7 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        st.pyplot(DataVisualizer.plot_line_chart)
+        st.pyplot(visualizer.plot_line_chart())
 
     # Análise Comparativa
     st.markdown('### Análise dos tipos de bilhetagem')
@@ -32,7 +32,7 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        st.pyplot(DataVisualizer.plot_bilhetagem_comparativa)
+        st.pyplot(visualizer.plot_bilhetagem_comparativa())
     st.markdown('### Análise de volumes de viagem por linha')
     st.markdown("""
                 <p>
@@ -45,7 +45,7 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        st.pyplot(DataVisualizer.plot_bilhetagem_geral)
+        st.pyplot(visualizer.plot_top_linhas())
     st.markdown('### Análise de volume de viagens por empresa')
     st.markdown("""
                 <p>
@@ -56,4 +56,4 @@ def insights(df):
                 """, unsafe_allow_html=True)
     col1, col2 = st.columns([1.1, 0.9])
     with col1:
-        st.pyplot(DataVisualizer.plot_top_empresas)
+        st.pyplot(visualizer.plot_top_empresas())
