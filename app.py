@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import seaborn as sns
-from services.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_top_linhas, plot_top_empresas
+from modules.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_top_linhas, plot_top_empresas
 import matplotlib.pyplot as plt
 
 # Carregamento de dados
