@@ -1,44 +1,7 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
-from modules.graphs import plot_line_chart, plot_bilhetagem_comparativa, plot_top_linhas, plot_top_empresas
-import matplotlib.pyplot as plt
-
-# Carregamento de dados
-df = {}
-ano_df = 2018
-
-# Laço para carregar os dados de 2018, 2019 e 2020 que tem as mesmas características
-for i in range(3):
-    df[ano_df] = pd.read_csv(f"data/01-dados-be-{ano_df}-analitico.csv", encoding='latin1', sep=';')
-    ano_df += 1
-# Carregamento dos dados de 2021 e 2022 que tem características diferentes dos demais
-df[2021] = pd.read_csv("data/01-dados-be-2021-analitico.csv")
-df[2022] = pd.read_csv("data/01-dados-be-2022-analitico.csv", encoding='latin1', sep=',')
-
-# Renomeação de colunas para padronização
-df[2018].rename(columns={'Mês': 'Mes'}, inplace=True)
-df[2019].rename(columns={'Mês': 'Mes'}, inplace=True)
-df[2021].rename(columns={'Mês': 'Mes'}, inplace=True)
-
-ano_df = 2018
-
-# Lão para adicionar a coluna de ano para identificação quando concatenar os dataframes
-for i in range(len(df)):
-    df[ano_df]['Ano'] = ano_df
-    ano_df += 1
-
-# Concatenação dos dataframes
-dfs_bilhetagem = [df[2018], df[2019], df[2020], df[2021], df[2022]]
-df_bilhetagem_geral = pd.concat(dfs_bilhetagem, ignore_index=True)
-
-# Manipulação de dados
-df_bilhetagem_geral['Empresa'] = df_bilhetagem_geral['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO') # Correção de acentuação
-df_bilhetagem_geral['Mes_Ano'] = df_bilhetagem_geral['Mes'].astype(str) + '/' + df_bilhetagem_geral['Ano'].astype(str) # Criação de coluna Mes_Ano
-
-# Viagens por mês/ano
-viagens_por_mes = df_bilhetagem_geral.groupby('Mes_Ano')['Qtd_Viagens'].sum().reset_index()
+from modules.data_loader import DataLoader
+from modules.analyzer import DataAnalyzer
+from modules.visualizer import DataVisualizer
 
 # Configuração da página
 st.set_page_config(

@@ -4,8 +4,11 @@ class DataAnalyzer:
         self.df = df
 
     def clean_data(self):
-        self.df['Empresa'] = self.df['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO')
+        # Padronizar a empresa CONCEIÇÃO
+        self.df['Empresa'] = self.df['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO') 
+        # Criar coluna Mes_Ano
         self.df['Mes_Ano'] = self.df['Mes'] + '/' + self.df['Ano'].astype(str)
     
     def viagens_mes(self):
+        # Retorna a quantidade de viagens por mes/ano
         return self.df.groupby('Mes_Ano')['Qtd_viagens'].sum().reset_index()
