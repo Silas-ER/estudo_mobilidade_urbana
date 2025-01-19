@@ -23,14 +23,28 @@ class DataVisualizer:
         return plt.gcf()
     
     def plot_boxplot(self):
-        plt.figure(figsize=(4, 2))
-        boxplot = sns.boxplot(data=self.df, x='Qtd_Viagens')
-        plt.title("Distribuição de Qtd_Viagens", fontsize=12)
-        plt.xlabel("Quantidade de Viagens", fontsize=8)
-        plt.ylabel("Densidade", fontsize=8)
+        # Filtra somente as variáveis selecionadas
+        variaveis_relevantes = ['Qtd_Viagens', 'Vale_Transporte', 'Inteira_Especie',
+                                'Integracao_Plena', 'Gratuito_BT', 'Estudante_Cartao']
+        df_filtrado = self.df[variaveis_relevantes]
+
+        plt.figure(figsize=(16, 8))
+        df_filtrado.boxplot(vert=False, patch_artist=True, widths=0.7)
+        plt.title('Distribuição das Variáveis Relevantes (Boxplot)', fontsize=16)
+        plt.xlabel('Valores', fontsize=14)
+        plt.ylabel('Variáveis', fontsize=14)
+        plt.grid(axis='x', linestyle='--', alpha=0.7)
+
+        # Define os ticks no eixo X de 75.000 em 75.000
+        max_value = df_filtrado.max().max()
+        tick_values = range(0, int(max_value) + 33200, 33200)
+        plt.xticks(tick_values, fontsize=12)
+        plt.yticks(fontsize=10)
+        plt.tight_layout()
 
         return plt.gcf()
     
+    # Função para plotar gráfico de linhas com base na quantidade de viagens por mês
     def plot_line_chart(self):
 
         self.df['Mes_Ano'] = pd.to_datetime(self.df['Mes_Ano'])
@@ -44,6 +58,10 @@ class DataVisualizer:
         #plt.xticks(rotation=90)
         
         return plt
+
+    # Função que vai prever a tendencia de uso de transporte público para os próximos 3 anos com base nos anteriores
+    def plot_tendencias_de_viagem(self):
+        pass
 
     def plot_bilhetagem_comparativa(self):
         # Somar as colunas de tipos de bilhetagem

@@ -16,10 +16,18 @@ def insights(df):
                     Com isso, optamos por fazer um gráfico de linhas que expressaria da melhor forma a variação das viagens durante o tempo.
                 </p>
                 """, unsafe_allow_html=True)
-    col1, col2 = st.columns([1.1, 0.9])
+    col1, col2 = st.columns([0.5, 1.5])
     with col1:
-        st.pyplot(visualizer.plot_line_chart())
-
+        opcao_uso = st.selectbox(
+            "Selecione o tipo de visualização",
+            ["Dados Atuais", "Tendências"]
+        )
+    col1, col2, col3 = st.columns([0.1, 1.8, 0.1])
+    with col2:
+        if opcao_uso == "Tendências":
+            pass
+        else:
+            st.pyplot(visualizer.plot_line_chart())
     # Análise Comparativa
     st.markdown('### Análise dos tipos de bilhetagem')
     st.markdown("""

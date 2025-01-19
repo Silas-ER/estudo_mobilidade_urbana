@@ -78,9 +78,9 @@ def content_data(df):
     st.divider()  
 
     # Análise de correlação e outliers
-    col1, col2 = st.columns([1, 1]) 
+    col1, col2, col3 = st.columns([0.1, 1.8, 0.1]) 
     # Correlção de variáveis
-    with col1: 
+    with col2: 
         st.markdown("""
                     <h5>Correlação de variáveis</h5>
                     <p>
@@ -97,19 +97,21 @@ def content_data(df):
 
         st.pyplot(visualizer.plot_heatmap())  
 
-    # Outliers de viagens     
+    # Outliers de viagens   
+    col1, col2, col3 = st.columns([0.1, 1.8, 0.1]) 
     with col2:
         st.markdown("""
-                    <h5>Outliers de viagens</h5>
+                    <h5>Distribuição de variáveis</h5>
                     <p>
-                        Afim de observar a presença de outliers na coluna 'Qtd_Viagens' optamos por fazer um boxplot.
+                        Afim de observar as variáveis que consideramos mais relevantes, optamos por plotar um boxsplot delas, sendo:
                         <br>
                         <ul>
-                            <li>A partir dele observamos que o valor limite inferior de viagens é o 0 e o limite superior é na casa dos 4.500.</li>
-                            <li>Também podemos ver que o primeiro quartil está na casa das 500 viagens, segundo quartil (mediana) está na casa dos 1.200 ~ viagens e 
-                        o terceiro quartil por volta das 2.200 viagens.</li>
-                            <li>Também podemos observar a presença de outliers, que são os pontos fora do limite superior e inferior. Numa quantidade significativa e 
-                        que devem ser descartados ou avaliados a partir de datas específicas para escolha de manter ou não na análise.</li>
+                            <li>Qtd_Viagens - Representa diretamente o comportamento do uso;</li>
+                            <li>Vale_Transporte - Importante para análise de subsídios e uso;</li>
+                            <li>Inteira_Especie - Alta dispersão pode indicar padrões interessantes;</li>
+                            <li>Integração_Plena - Muitos outliers e relevância no contexto de integração;</li>
+                            <li>Gratuito_BT - Muitos outliers, útil para investigar anomalias;</li>
+                            <li>Estudante_Cartao - Provavelmente relevante no contexto de análise por público.</li>
                         </ul>
                     </p>
                     """, unsafe_allow_html=True)
