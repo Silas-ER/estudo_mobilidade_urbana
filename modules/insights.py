@@ -28,6 +28,9 @@ def insights(df):
             pass
         else:
             st.pyplot(visualizer.plot_line_chart())
+
+
+            
     # Análise Comparativa
     st.markdown('### Análise dos tipos de bilhetagem')
     st.markdown("""

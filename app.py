@@ -23,10 +23,13 @@ data_analyzer.clean_data()
 st.title('Mobilidade Urbana - Natal/RN')
 
 # Abas para explicações e insights
-tab_explicacao_dados, tab_insights = st.tabs(['Data Overview', 'Insights'])
+tab_explicacao_dados, tab_ml, tab_insights = st.tabs(['Data Overview', 'Aplicação de ML', 'Insights'])
 
 with tab_explicacao_dados:
     content_data(df)
+
+with tab_ml:
+    pass
 
 with tab_insights:
     insights(df)

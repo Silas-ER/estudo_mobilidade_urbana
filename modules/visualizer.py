@@ -54,6 +54,8 @@ class DataVisualizer:
         plt.title('Evolução do Uso de Transporte Público em Natal/RN')
         plt.xlabel('Tempo (mes/ano)')
         plt.ylabel('Quantidade de Viagens')
+        sns.lineplot(data=df_temp, x='Mes_Ano', y='Qtd_Viagens', marker='o', color='blue') # Adicionando marcadores
+        plt.grid(True, linestyle='--', alpha=0.7) # Adicionando grid
         #plt.xticks(rotation=90)
         
         return plt
