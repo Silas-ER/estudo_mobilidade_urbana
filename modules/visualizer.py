@@ -23,7 +23,7 @@ class DataVisualizer:
         return plt.gcf()
     
     def plot_boxplot(self):
-        # Filtra somente as variáveis selecionadas
+        # Filtrar somente as variáveis selecionadas
         variaveis_relevantes = ['Qtd_Viagens', 'Vale_Transporte', 'Inteira_Especie',
                                 'Integracao_Plena', 'Gratuito_BT', 'Estudante_Cartao']
         df_filtrado = self.df[variaveis_relevantes]
@@ -35,7 +35,6 @@ class DataVisualizer:
         plt.ylabel('Variáveis', fontsize=14)
         plt.grid(axis='x', linestyle='--', alpha=0.7)
 
-        # Define os ticks no eixo X de 75.000 em 75.000
         max_value = df_filtrado.max().max()
         tick_values = range(0, int(max_value) + 33200, 33200)
         plt.xticks(tick_values, fontsize=12)
