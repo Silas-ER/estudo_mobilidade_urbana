@@ -3,7 +3,8 @@
 <ol>
     <li>
         <ul>
-            <li>Criar o ambiente virtual com virtualenv</li>
+            <li>Criar o ambiente virtual com virtualenv:</li>
+            <li>pip install virtualenv</li>
             <li>virtualenv env</li>
             <li>env\Scripts\activate</li>
         </ul>

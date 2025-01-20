@@ -78,7 +78,7 @@ def content_data(df):
     st.divider()  
 
     # Análise de correlação e outliers
-    col1, col2, col3 = st.columns([0.1, 1.8, 0.1]) 
+    col1, col2, col3 = st.columns([0.6, 1.2, 0.6]) 
     # Correlção de variáveis
     with col2: 
         st.markdown("""
@@ -96,6 +96,31 @@ def content_data(df):
                     """, unsafe_allow_html=True)
 
         st.pyplot(visualizer.plot_heatmap())  
+
+        st.markdown("""
+                    <p>
+                        Com base no heatmap podemos observar os seguintes resultados:
+                        <br>
+                        <ul>
+                            <li>
+                                Vemos que a maioria das variáveis tem uma alta relação com a quantidade de viagens, 
+                                exceto a Integracao_Complementar e a Tarifa_Social, isso pode se dar a esse tipo de passagem ser utilizada apenas
+                                em ocasiões especificas na cidade. 
+                            </li>
+                            <li>
+                                Também notamos o destaque das passagens Inteira_Especie e Inteira_Cartao que tem uma forte correlação com a quantidade de viagens, 
+                                seguidas pelas Gratuito_BT, Estudante_BT e Vale_Transporte. Além das Integracao_Plena, Gratuito_Cartao e Estudante_Cartao. Isso mostra que 
+                                são os métodos de pagamento mais determinantes para o transporte público.
+                            </li>
+                            <li>
+                                Já dentre a correlação entre os meios de pagamento podemos destacar que há uma correlação do Estudante_Cartao e Estudante_BT, assim como
+                                Gratuito_Cartao e Gratuito_BT por ambos serem basicamente variações do mesmo método de pagamento, sendo um em espécie e outro eletrônico.
+                                As coisas ficam mais interessantes ao ver a relação entre Vale_transporte e a Integracao_Plena, além das Inteira_Cartao e Inteira_Especie, isso mostra
+                                uma tendencia de uso similar entre esses métodos de pagamento nas viagens.
+                            </li>
+                        </ul>
+                    </p>
+                    """, unsafe_allow_html=True)    
 
     # Outliers de viagens   
     col1, col2, col3 = st.columns([0.1, 1.8, 0.1]) 
