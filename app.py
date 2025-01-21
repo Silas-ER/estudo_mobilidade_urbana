@@ -4,7 +4,7 @@ from modules.analyzer import DataAnalyzer
 from modules.visualizer import DataVisualizer
 from modules.content_data import content_data
 from modules.insights import insights
-from modules.machine_learning import ml
+from modules.ml_viewer import ml
 
 # Configuração da página
 st.set_page_config(
@@ -35,3 +35,4 @@ with tab_ml:
 with tab_insights:
     insights(df)
     
+st.dataframe(df)
