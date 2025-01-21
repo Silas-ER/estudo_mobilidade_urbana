@@ -1,6 +1,6 @@
 import streamlit as st
 from modules.data_loader import DataLoader
-from modules.analyzer import DataAnalyzer
+from modules.data_processing import DataAnalyzer
 from modules.visualizer import DataVisualizer
 from templates.content_data import content_data
 from templates.insights import insights

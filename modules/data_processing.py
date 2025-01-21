@@ -10,6 +10,7 @@ class DataAnalyzer:
         self.df['Mes'] = self.df['Mes'].astype(str)
         self.df['Ano'] = self.df['Ano'].astype(str)
         self.df['Empresa'] = self.df['Empresa'].astype(str)
+        
         self.df['Mes_Ano'] = self.df['Mes'] + '/' + self.df['Ano']
     
     def viagens_mes(self):
