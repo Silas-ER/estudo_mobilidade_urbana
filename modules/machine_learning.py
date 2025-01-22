@@ -32,7 +32,6 @@ class MachineLearning:
         x = self.df.drop('Qtd_Viagens', axis=1)
         y = self.df['Qtd_Viagens']
 
-        print(x.dtypes)
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
         return x_train, x_test, y_train, y_test
