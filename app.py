@@ -4,7 +4,7 @@ from modules.data_processing import DataAnalyzer
 from modules.visualizer import DataVisualizer
 from templates.content_data import content_data
 from templates.insights import insights
-#from templates.ml_viewer import ml
+from templates.ml_viewer import ml
 
 # Configuração da página
 st.set_page_config(
@@ -32,10 +32,7 @@ with tab_explicacao_dados:
     content_data(df)
 
 with tab_ml:
-    pass
-    #ml(df)
+    ml(df)
 
 with tab_insights:
     insights(df)
-    
-#st.dataframe(df)
