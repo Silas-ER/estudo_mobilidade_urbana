@@ -24,8 +24,8 @@ class DataVisualizer:
     
     def plot_boxplot(self):
         # Filtrar somente as variáveis selecionadas
-        variaveis_relevantes = ['Qtd_Viagens', 'Vale_Transporte', 'Inteira_Especie',
-                                'Integracao_Plena', 'Gratuito_BT', 'Estudante_Cartao']
+        variaveis_relevantes = ['Qtd_Viagens', 'Vale_Transporte', 'Inteira',
+                                'Integracao', 'Gratuito', 'Estudante']
         df_filtrado = self.df[variaveis_relevantes]
 
         plt.figure(figsize=(16, 8))
@@ -68,8 +68,8 @@ class DataVisualizer:
     def plot_bilhetagem_comparativa(self):
         # Somar as colunas de tipos de bilhetagem
         bilhetagem_cols = [
-            'Gratuito_Cartao', 'Gratuito_BT', 'Estudante_Cartao', 'Estudante_BT',
-            'Vale_Transporte', 'Inteira_Cartao', 'Inteira_Especie', 'Tarifa_Social'
+            'Gratuito', 'Estudante',
+            'Vale_Transporte', 'Inteira', 'Tarifa_Social'
         ]
 
         df_bilhetagem = self.df[bilhetagem_cols].sum().reset_index()

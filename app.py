@@ -20,6 +20,7 @@ df = data_loader.load_data()
 
 data_analyzer = DataAnalyzer(df)
 data_analyzer.clean_data()
+data_analyzer.data_formatter()  
 
 st.title('Mobilidade Urbana - Natal/RN')
 
