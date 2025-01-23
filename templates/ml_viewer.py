@@ -87,18 +87,18 @@ def ml(df):
     with col1: param1 = st.selectbox("Primeiro parametro (x):", ('Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante'))
     with col2: param2 = st.selectbox("Segundo parametro (y):", ('Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante'))
     
+    # Plotando K-means
     col1, col2, col3 = st.columns([0.5, 1, 0.5])
     with col2: st.pyplot(learning.kmeans_clustering(param1, param2))
 
     ###################################################################################
 
-    # Exibir coeficientes da regressão linear
-    st.subheader('Coeficientes da Regressão Linear')
-    st.pyplot(learning.linear_regression_plot())
+    st.subheader('Previsão de Viagens')
+    st.markdown("""
+                    <p>
+                    </p>
+                """, unsafe_allow_html=True)
+    
+    
 
-    ###################################################################################
-         
-    # Exibir gráfico de regressão
-    #st.subheader('Evolução do Uso de Transporte Público')
-    #st.pyplot(learning.line_chart_plot_emp())
-
+    st.pyplot(learning.forecast_and_plot())

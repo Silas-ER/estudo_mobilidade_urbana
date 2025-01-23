@@ -2,68 +2,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.metrics import root_mean_squared_error, r2_score, mean_absolute_error
-from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 
 import pandas as pd
-import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
+import numpy as np
 
 class MachineLearning:
     def __init__(self, df):
         self.df = df
-
-    def data_preprocessing(self):
-        le = LabelEncoder()
-
-        self.df['Mes'] = le.fit_transform(self.df['Mes'])
-        self.df['Empresa'] = le.fit_transform(self.df['Empresa'])
-
-        self.df['Mes_Ano'] = pd.to_datetime(self.df['Mes_Ano'], format='%m/%Y')
-
-        self.df['Mes_Num'] = self.df['Mes_Ano'].dt.month
-        self.df['Ano_Num'] = self.df['Mes_Ano'].dt.year
-        self.df = self.df.drop('Mes_Ano', axis=1)
-
-        if self.df['Ano'].dtype == 'object':
-            self.df['Ano'] = pd.to_numeric(self.df['Ano'], errors='coerce')
-            
-        #Dividindo entre variaveis de grupo e de teste
-        x = self.df.drop('Qtd_Viagens', axis=1)
-        y = self.df['Qtd_Viagens']
-
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
-
-        return x_train, x_test, y_train, y_test
-    
-    def model_regression(self):
-        x_train, x_test, y_train, y_test = self.data_preprocessing()
-
-        # Treinamento do modelo
-        model = RandomForestRegressor(n_estimators=100, random_state=42)
-        model.fit(x_train, y_train)
-
-        # Previsão e avaliação
-        y_pred = model.predict(x_test)
-        mse = root_mean_squared_error(y_test, y_pred)
-        mae = mean_absolute_error(y_test, y_pred)
-        r2 = r2_score(y_test, y_pred)
-
-        return mse, mae, r2
-    
-    def model_regression_plot(self):
-        self.df['Mes_Ano'] = pd.to_datetime(self.df['Ano_Num'].astype(str) + '-' + self.df['Mes_Num'].astype(str) + '-01')
-        
-        plt.figure(figsize=(12, 8))
-        plt.title('Evolução do Uso de Transporte Público em Natal/RN')
-        plt.xlabel('')
-        plt.ylabel('')
-
-        sns.lineplot(data=self.df, x='Mes_Ano', y='Qtd_Viagens', marker='o', color='blue') 
-        plt.grid(True, linestyle='--', alpha=0.7) 
-
-        return plt
 
     def correlation_data(self):
         numeric_cols = self.df.select_dtypes(include=['float64', 'int64'])
@@ -128,33 +77,119 @@ class MachineLearning:
         plt.legend(title='Cluster')
 
         return fig
-    
-    def linear_regression(self):
-        x_train, x_test, y_train, y_test = self.data_preprocessing()
 
-        columns_to_drop = ['Mes_Num', 'Ano_Num', 'Empresa', 'Mes', 'Ano', 'Linha']
+    def group_and_train(self):
+        # Agrupamento de viagens por ano com conversão de 'Ano' em inteiro
+        self.df['Ano'] = self.df['Ano'].astype(int)  # Converte 'Ano' para tipo numérico
+        df_grouped = self.df.groupby('Ano')['Qtd_Viagens'].sum().reset_index()
 
-        # Drop colunas em x_train e x_test
-        x_train = x_train.drop(columns=columns_to_drop, axis=1)
-        x_test = x_test.drop(columns=columns_to_drop, axis=1)
+        # Definindo x como anos e y como quantidade
+        x = df_grouped[['Ano']]
+        y = df_grouped['Qtd_Viagens']
 
+        # Separação dos dados
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+        # Treinar modelo de regressão linear
         model = LinearRegression()
         model.fit(x_train, y_train)
 
-        coefficients = pd.DataFrame(model.coef_, index= x_train.columns, columns=['Coeficiente'])
+        # Avaliação com métricas
+        y_pred = model.predict(x_test)
+        rmse = np.sqrt(root_mean_squared_error(y_test, y_pred))
+        r2 = r2_score(y_test, y_pred)
+        mae = mean_absolute_error(y_test, y_pred)
 
-        return coefficients
-    
-    def linear_regression_plot(self):
-        coef = self.linear_regression()
-        coef = coef.sort_values(by='Coeficiente', ascending=False)
+        return model, df_grouped, rmse, r2, mae
+
+    def forecast_and_plot(self):
+        model, historico, rmse, r2, mae = self.group_and_train()
+
+        # Previsões de próximo ano
+        ano_maximo = historico['Ano'].max()
+        proximo_ano = pd.DataFrame({'Ano': [ano_maximo + 1]})
+        
+        future_predictions = model.predict(proximo_ano)
+        proximo_ano['Qtd_Viagens'] = future_predictions
+
+        # Concatenar previsões ao histórico
+        historico = pd.concat([historico, proximo_ano], ignore_index=True)
+
+        # Plotar gráfico
         plt.figure(figsize=(10, 6))
-        sns.barplot(x='Coeficiente', y=coef.index, data=coef, palette='viridis')
-        plt.title('Impacto dos Tipos de Pagamento nas Viagens')
-        plt.xlabel('Valor do Coeficiente', fontsize=12)
-        plt.ylabel('Variáveis', fontsize=12)
-        plt.grid(alpha=0.3, linestyle='--')
-        plt.tight_layout()
+        plt.plot(historico['Ano'], historico['Qtd_Viagens'], label='Histórico', marker='o')
+        plt.axvline(x=ano_maximo, linestyle='--', color='gray')
+        plt.plot(proximo_ano['Ano'], proximo_ano['Qtd_Viagens'], label='Previsão', linestyle='--', marker='x', color='r')
+        plt.title('Número de Viagens por Ano')
+        plt.xlabel('Ano')
+        plt.ylabel('Número de Viagens')
+        
+        ax = plt.gca()  # Obter o eixo atual
+        ax.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+        plt.legend()
+        plt.grid(True)
         
         return plt
 
+    def group_and_train_by_company(self):
+        # Convertemos a coluna 'Ano' para inteiros
+        self.df['Ano'] = self.df['Ano'].astype(int)
+
+        # Criamos um dicionário para armazenar modelos por empresa
+        model_dict = {}
+        historico_dict = {}
+
+        # Vamos iterar sobre cada empresa distinta no conjunto de dados
+        for empresa in self.df['Empresa'].unique():
+            df_empresa = self.df[self.df['Empresa'] == empresa]
+
+            # Agrupamos a quantidade de viagens para cada ano, filtrado por empresa
+            df_grouped = df_empresa.groupby('Ano')['Qtd_Viagens'].sum().reset_index()
+            
+            x = df_grouped[['Ano']]
+            y = df_grouped['Qtd_Viagens']
+
+            # Divisão dos dados para treinamento e teste
+            x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+            # Treinamento do modelo de regressão linear
+            model = LinearRegression()
+            model.fit(x_train, y_train)
+
+            # Armazenamos o modelo treinado e o histórico das empresas
+            model_dict[empresa] = model
+            historico_dict[empresa] = df_grouped
+
+        return model_dict, historico_dict
+
+    def forecast_and_plot_by_company(self):
+        model_dict, historico_dict = self.group_and_train_by_company()
+        
+        plt.figure(figsize=(12, 8))
+
+        for empresa, model in model_dict.items():
+            historico = historico_dict[empresa]
+            ano_maximo = historico['Ano'].max()
+
+            # Preparar o próximo ano para previsão
+            proximo_ano = pd.DataFrame({'Ano': [ano_maximo + 1]})
+            future_predictions = model.predict(proximo_ano)
+            proximo_ano['Qtd_Viagens'] = future_predictions
+
+            # Concatenar previsões ao histórico
+            historico = pd.concat([historico, proximo_ano], ignore_index=True)
+
+            # Linha do gráfico
+            plt.plot(historico['Ano'], historico['Qtd_Viagens'], label=f'{empresa} (Histórico e Previsão)', marker='o')
+
+        # Configuração da exibição completa dos valores
+        ax = plt.gca()
+        ax.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
+
+        plt.title('Número de Viagens por Ano por Empresa')
+        plt.xlabel('Ano')
+        plt.ylabel('Número de Viagens')
+        plt.legend()
+        plt.grid(True)
+        
+        return plt 
