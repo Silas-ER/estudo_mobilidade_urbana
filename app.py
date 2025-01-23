@@ -27,7 +27,7 @@ st.title('Mobilidade Urbana - Natal/RN')
 # Abas para explicações e insights
 tab_explicacao_dados, tab_ml, tab_insights = st.tabs(['Data Overview', 'Aplicação de ML', 'Insights'])
 
-print(df.dtypes)
+#print(df.dtypes)
 
 with tab_explicacao_dados:
     content_data(df)

@@ -76,6 +76,12 @@ class MachineLearning:
     def linear_regression(self):
         x_train, x_test, y_train, y_test = self.data_preprocessing()
 
+        columns_to_drop = ['Mes_Num', 'Ano_Num', 'Empresa', 'Mes', 'Ano', 'Linha']
+
+        # Drop colunas em x_train e x_test
+        x_train = x_train.drop(columns=columns_to_drop, axis=1)
+        x_test = x_test.drop(columns=columns_to_drop, axis=1)
+
         model = LinearRegression()
         model.fit(x_train, y_train)
 
@@ -85,25 +91,37 @@ class MachineLearning:
     
     def linear_regression_plot(self):
         coef = self.linear_regression()
-        coef.plot(kind='bar')
+        coef = coef.sort_values(by='Coeficiente', ascending=False)
+        plt.figure(figsize=(10, 6))
+        sns.barplot(x='Coeficiente', y=coef.index, data=coef, palette='viridis')
         plt.title('Impacto dos Tipos de Pagamento nas Viagens')
-
+        plt.xlabel('Valor do Coeficiente', fontsize=12)
+        plt.ylabel('Variáveis', fontsize=12)
+        plt.grid(alpha=0.3, linestyle='--')
+        plt.tight_layout()
+        
         return plt
 
     def data_segmentation(self):
-        x = self.df.drop('Qtd_Viagens', axis=1)
+        x = self.df
+
+        # Colunas a serem removidas
+        columns_to_drop = ['Mes_Num', 'Ano_Num', 'Empresa', 'Mes', 'Ano', 'Linha']
+        x = x.drop(columns=columns_to_drop, axis=1)
 
         # Normalização
         scaler = StandardScaler()
         x_scaled = scaler.fit_transform(x)
 
-        # Kmeans como Clusterning
+        # KMeans para clustering
         kmeans = KMeans(n_clusters=3, random_state=42)
         kmeans.fit(x_scaled)
 
         self.df['Cluster'] = kmeans.labels_
 
-        pairplot = sns.pairplot(self.df, hue='Cluster')
+        # Seleção de colunas relevantes para o pairplot
+        selected_columns = ['Estudante', 'Gratuito', 'Inteira', 'Integracao', 'Qtd_Viagens', 'Cluster']
+        pairplot = sns.pairplot(self.df[selected_columns], hue='Cluster')
 
         return pairplot
         """

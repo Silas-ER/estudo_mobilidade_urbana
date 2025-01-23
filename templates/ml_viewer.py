@@ -17,8 +17,7 @@ def ml(df):
 
     # Exibir coeficientes da regressão linear
     st.subheader('Coeficientes da Regressão Linear')
-    coefficients = learning.linear_regression()
-    st.write(coefficients)
+    st.pyplot(learning.linear_regression_plot())
 
     # Exibir segmentação de dados
     st.subheader('Segmentação de Dados (Clustering)')
