@@ -1,11 +1,12 @@
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.metrics import root_mean_squared_error, r2_score
+from sklearn.metrics import root_mean_squared_error, r2_score, mean_absolute_error
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 
 import pandas as pd
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
@@ -46,12 +47,12 @@ class MachineLearning:
         # Previsão e avaliação
         y_pred = model.predict(x_test)
         mse = root_mean_squared_error(y_test, y_pred)
-        
-        return mse
+        mae = mean_absolute_error(y_test, y_pred)
+        r2 = r2_score(y_test, y_pred)
+
+        return mse, mae, r2
     
     def model_regression_plot(self):
-        x_train, x_test, y_train, y_test = self.data_preprocessing()
-
         self.df['Mes_Ano'] = pd.to_datetime(self.df['Ano_Num'].astype(str) + '-' + self.df['Mes_Num'].astype(str) + '-01')
         
         plt.figure(figsize=(12, 8))
@@ -67,13 +68,67 @@ class MachineLearning:
     def correlation_data(self):
         numeric_cols = self.df.select_dtypes(include=['float64', 'int64'])
         numeric_cols = numeric_cols.drop(['Linha'],axis=1)
-        correlation = numeric_cols.corr()
-        plt.title('Mapa de Calor de Correlação dos dados')
-        plt.figure(figsize=(10, 8))
-        heatmap = sns.heatmap(correlation, annot=True)
         
-        return plt
+        correlation = numeric_cols.corr()
+        
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.heatmap(correlation, annot=True, ax=ax)
+        ax.set_title('Mapa de Calor de Correlação dos dados')
 
+        return fig
+
+    def clustering(self):
+        #Pré Processamento
+        scaler = StandardScaler()
+        data_normalized = scaler.fit_transform(self.df[['Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante']])
+        
+        wcss = []
+        for i in range(1, 11):
+            kmeans = KMeans(n_clusters=i, random_state=0)
+            kmeans.fit(data_normalized)
+            wcss.append(kmeans.inertia_)
+
+        fig, ax = plt.subplots()
+        ax.plot(range(1, 11), wcss)
+        ax.set_title('Método do Cotovelo')
+        ax.set_xlabel('Número de Clusters')
+        ax.set_ylabel('WCSS')
+        
+        return fig
+    
+    def kmeans_clustering(self, var1, var2):
+        scaler = StandardScaler()
+        data_normalized = scaler.fit_transform(self.df[['Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante']])
+        
+        var_indices = {
+        'Inteira': 0,
+        'Vale_Transporte': 1,
+        'Integracao': 2,
+        'Qtd_Viagens': 3,
+        'Estudante': 4
+        }
+
+        kmeans = KMeans(n_clusters=3, random_state=42)
+        clusters = kmeans.fit_predict(data_normalized)
+        self.df['Cluster'] = clusters
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        scatter = sns.scatterplot(
+            x=data_normalized[:, var_indices[var1]],  
+            y=data_normalized[:, var_indices[var2]],  
+            hue=clusters,             
+            palette='viridis',        
+            s=100,                    
+            ax=ax
+        )
+        
+        ax.set_title('Clusterização com K-Means (k=3)', fontsize=15)
+        ax.set_xlabel(f'{var1} (Normalizado)', fontsize=12)
+        ax.set_ylabel(f'{var2} (Normalizado)', fontsize=12)
+        plt.legend(title='Cluster')
+
+        return fig
+    
     def linear_regression(self):
         x_train, x_test, y_train, y_test = self.data_preprocessing()
 
@@ -103,88 +158,3 @@ class MachineLearning:
         
         return plt
 
-    def data_segmentation(self):
-        x = self.df
-
-        # Colunas a serem removidas
-        columns_to_drop = ['Mes_Num', 'Ano_Num', 'Empresa', 'Mes', 'Ano', 'Linha']
-        x = x.drop(columns=columns_to_drop, axis=1)
-
-        # Normalização
-        scaler = StandardScaler()
-        x_scaled = scaler.fit_transform(x)
-
-        # KMeans para clustering
-        kmeans = KMeans(n_clusters=3, random_state=42)
-        kmeans.fit(x_scaled)
-
-        self.df['Cluster'] = kmeans.labels_
-
-        # Seleção de colunas relevantes para o pairplot
-        selected_columns = ['Estudante', 'Gratuito', 'Inteira', 'Integracao', 'Qtd_Viagens', 'Cluster']
-        pairplot = sns.pairplot(self.df[selected_columns], hue='Cluster')
-
-        return pairplot
-        """
-        def plot_clusters_2D(df, x_col, y_col, cluster_column='Cluster'):
-            plt.figure(figsize=(10, 6))
-            sns.scatterplot(data=df, x=x_col, y=y_col, hue=cluster_column, palette='viridis', s=100)
-            plt.title(f'Clusters com {x_col} e {y_col}', fontsize=16)
-            plt.xlabel(x_col, fontsize=12)
-            plt.ylabel(y_col, fontsize=12)
-            plt.legend(title="Cluster", loc='upper right')
-            plt.grid(alpha=0.5)
-            plt.show()
-        def plot_cluster_distribution(df, variable, cluster_column='Cluster'):
-    plt.figure(figsize=(10, 6))
-    sns.barplot(data=df, x=cluster_column, y=variable, palette='viridis', ci=None)
-    plt.title(f'Distribuição de {variable} por Cluster', fontsize=16)
-    plt.xlabel('Cluster', fontsize=12)
-    plt.ylabel(variable, fontsize=12)
-    plt.grid(alpha=0.5)
-    plt.show()
-
-    from sklearn.decomposition import PCA
-
-def plot_pca_clusters(df, cluster_column='Cluster'):
-    pca = PCA(n_components=2)
-    data_scaled = StandardScaler().fit_transform(df.drop(columns=[cluster_column]))
-    pca_result = pca.fit_transform(data_scaled)
-    
-    df['PCA1'] = pca_result[:, 0]
-    df['PCA2'] = pca_result[:, 1]
-    
-    plt.figure(figsize=(10, 6))
-    sns.scatterplot(data=df, x='PCA1', y='PCA2', hue=cluster_column, palette='viridis', s=100)
-    plt.title('Clusters com Redução PCA (2D)', fontsize=16)
-    plt.xlabel('PCA1', fontsize=12)
-    plt.ylabel('PCA2', fontsize=12)
-    plt.legend(title="Cluster", loc='upper right')
-    plt.grid(alpha=0.5)
-    plt.show()
-
-    def plot_radar_chart(df, cluster_column='Cluster'):
-    cluster_means = df.groupby(cluster_column).mean()
-    categories = cluster_means.columns
-    num_clusters = len(cluster_means)
-    
-    angles = np.linspace(0, 2 * np.pi, len(categories), endpoint=False).tolist()
-    angles += angles[:1]  # Fechar o gráfico
-    
-    plt.figure(figsize=(8, 8))
-    ax = plt.subplot(111, polar=True)
-    
-    for i in range(num_clusters):
-        values = cluster_means.iloc[i].tolist()
-        values += values[:1]  # Fechar o gráfico
-        ax.plot(angles, values, label=f'Cluster {i}')
-        ax.fill(angles, values, alpha=0.25)
-    
-    ax.set_theta_offset(np.pi / 2)
-    ax.set_theta_direction(-1)
-    ax.set_xticks(angles[:-1])
-    ax.set_xticklabels(categories, fontsize=10)
-    ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
-    plt.title('Características Médias por Cluster', fontsize=16)
-    plt.show()
-        """

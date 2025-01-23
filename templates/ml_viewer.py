@@ -22,7 +22,8 @@ def ml(df):
         </p>
         """, unsafe_allow_html=True
     )    
-    st.pyplot(learning.correlation_data())
+    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    with col2: st.pyplot(learning.correlation_data())
     st.markdown("""
                 <p>
                     Analisando o mapa de calor obtido podemos chegar as seguintes conclusões:
@@ -36,28 +37,68 @@ def ml(df):
                     </ul>
                     Insights extraídos:
                     <ul>
-                        <li>Segmentação por Grupos:
-
-Estudantes e usuários de Vale Transporte formam dois grupos principais, com alta frequência de viagens e forte relação com Integração e passagens Inteiras.
-Impacto das Integrações:
-
-O uso de Integração está fortemente relacionado ao comportamento de usuários que utilizam Vale Transporte e passagens Inteiras. Isso pode ser investigado em relação a políticas tarifárias e subsídios.
-Foco em Políticas Sociais:
-
-As variáveis relacionadas a Tarifa Social e Gratuito apresentam correlações mais moderadas, indicando que essas políticas podem estar destinadas a subgrupos específicos (e.g., estudantes ou usuários ocasionais).</li>
-                    <\ul>
+                        <li>
+                            Estudantes e usuários de Vale Transporte formam dois grupos principais, 
+                            com alta frequência de viagens e sendo Vale Transporte com forte relação com Integração e passagens Inteiras.
+                        </li>
+                        <li>
+                            Integração tem uma forte relação com o comportamento de usuários que utilizam Vale Transporte e Inteira.
+                        </li>
+                        <li>
+                            Politicas sociais relacionadas a Tarifa Social e Gratuidade estão relacionadas a subgrupos ou eventos específicos (ocasionais),
+                            sendo assim, com valores mais moderados.
+                        </li>
+                    </ul>
                 </p>
                 """, unsafe_allow_html=True)
     
+    ###################################################################################
+
+    # Exibir o K-means com base nos dados citados anteriormente
+    st.subheader('Métodos de Clusterização')
+
+    # Gráfico de cotovelo
+    st.markdown(
+        """
+        <p>
+            Na parte de Clusterização, foquei nas variáveis mais relevantes encontradas anteriormente ('Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante'), 
+            com isso parti para o método do cotovelo (que utiliza a medida de variabilidade interna dentro dos cluters - WCSS), que é uma boa forma de obter 
+            o número ideal de clusters para a análise do K-means.
+            <ul>
+                <li>Foram utilizados um intervalo de 1 a 11 para o calculo do WCSS (Within-Cluster Sum of Squares);</li>
+                <li>Após isso foi criado o gráfico com o número de clusters no eixo X e o WCSS no eixo Y;</li>
+                <li>Com isso, o gráfico abaixo foi criado, onde podemos identificar o 3 como o número ideal de clusters.</li>
+            </ul>
+        </p>
+        """, unsafe_allow_html=True
+    )    
+    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    with col2: st.pyplot(learning.clustering())
     
-    # Exibir gráfico de regressão
-    st.subheader('Evolução do Uso de Transporte Público')
-    st.pyplot(learning.model_regression_plot())
+    st.markdown(
+        """
+        <p>
+            Com o número ideal de clusters definido, rodamos o K-means, com as possibilidades abaixo:
+        </p>
+        """, unsafe_allow_html=True
+    )  
+
+    col1, col2, col3 = st.columns([0.6, 0.6, 1.8])
+    with col1: param1 = st.selectbox("Primeiro parametro (x):", ('Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante'))
+    with col2: param2 = st.selectbox("Segundo parametro (y):", ('Inteira', 'Vale_Transporte', 'Integracao', 'Qtd_Viagens', 'Estudante'))
+    
+    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    with col2: st.pyplot(learning.kmeans_clustering(param1, param2))
+
+    ###################################################################################
 
     # Exibir coeficientes da regressão linear
     st.subheader('Coeficientes da Regressão Linear')
     st.pyplot(learning.linear_regression_plot())
 
-    # Exibir segmentação de dados
-    st.subheader('Segmentação de Dados (Clustering)')
-    st.pyplot(learning.data_segmentation())
+    ###################################################################################
+         
+    # Exibir gráfico de regressão
+    #st.subheader('Evolução do Uso de Transporte Público')
+    #st.pyplot(learning.line_chart_plot_emp())
+
