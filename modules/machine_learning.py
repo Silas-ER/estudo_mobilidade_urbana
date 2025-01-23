@@ -66,8 +66,9 @@ class MachineLearning:
 
     def correlation_data(self):
         numeric_cols = self.df.select_dtypes(include=['float64', 'int64'])
-        #numeric_cols = numeric_cols.drop(['Mes', 'Linha', 'Ano', 'Empresa'],axis=1)
+        numeric_cols = numeric_cols.drop(['Linha'],axis=1)
         correlation = numeric_cols.corr()
+        plt.title('Mapa de Calor de Correlação dos dados')
         plt.figure(figsize=(10, 8))
         heatmap = sns.heatmap(correlation, annot=True)
         
