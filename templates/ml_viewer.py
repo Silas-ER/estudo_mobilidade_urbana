@@ -91,14 +91,48 @@ def ml(df):
     col1, col2, col3 = st.columns([0.5, 1, 0.5])
     with col2: st.pyplot(learning.kmeans_clustering(param1, param2))
 
+    st.markdown("""
+                    <p>
+                        Com o gráfico plotado, podemos identificar considerando a principal variável associada a quantidade de viagens (Vale_Transporte):
+                        <ul>
+                            <li>
+                                3 pontos de agrupamento:
+                                <ul>
+                                    <li>Cluster 0: Agrupa os pontos que possuem as menores quantidades de viagens e menores valores de vale-transporte;</li>
+                                    <li>Cluster 1: Fica na região central, com valores intermediários de Qtd_Viagens e Vale_Transporte;</li>
+                                    <li>Cluster 2: Relaciona-se aos maiores valores em ambas as variáveis.</li>
+                                </ul>
+                            </li>
+                            <li>Os dados confirmam a correlação positiva: conforme o valor de "Qtd_Viagens" aumenta, o "Vale_Transporte" também tende a aumentar.</li>
+                            <li>A disposição inclinada dos pontos sugere que os passageiros que fazem mais viagens são beneficiados com um maior valor associado ao vale-transporte.</li>
+                        </ul>
+                    </p>
+                """, unsafe_allow_html=True)
+
     ###################################################################################
 
     st.subheader('Previsão de Viagens')
     st.markdown("""
                     <p>
+                        Por fim utilizando modelos de regressão realizei a tentativa de obtenção de previsões de viagens para os próximos anos.
+                        <br>
+                        Agrupando os dados por ano e aplicando um modelo de regressão linear para prever a quantidade de viagens.
+                    </p>
+                """, unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    with col2: st.pyplot(learning.forecast_and_plot())
+
+    ###################################################################################
+
+    st.subheader('Previsão de Viagens por Empresa')
+    st.markdown("""
+                    <p>
+                        Repetindo o mesmo processo para prever a quantidade de viagens por empresa. 
+                        O que nos permite identificar o comportamento de cada empresa ao longo dos anos.
+                        E serve como base para a tomada de decisões estratégicas, como a manutenção de linhas e contratos vinculados a prefeitura.
                     </p>
                 """, unsafe_allow_html=True)
     
-    
 
-    st.pyplot(learning.forecast_and_plot())
+    col1, col2, col3 = st.columns([0.5, 1, 0.5])
+    with col2: st.pyplot(learning.forecast_and_plot_by_company())

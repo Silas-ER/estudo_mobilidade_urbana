@@ -29,11 +29,8 @@ tab_explicacao_dados, tab_ml, tab_insights = st.tabs(['Data Overview', 'Aplicaç
 
 #print(df.dtypes)
 
-with tab_explicacao_dados:
-    content_data(df)
+with tab_explicacao_dados: content_data(df)
 
-with tab_ml:
-    ml(df)
+with tab_ml: ml(df)
 
-with tab_insights:
-    insights(df)
+with tab_insights: insights(df)

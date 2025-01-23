@@ -132,31 +132,29 @@ class MachineLearning:
         return plt
 
     def group_and_train_by_company(self):
-        # Convertemos a coluna 'Ano' para inteiros
         self.df['Ano'] = self.df['Ano'].astype(int)
+        self.df['Empresa'] = self.df['Empresa'].replace('CONCEIÇÃO', 'CONCEICAO') 
 
-        # Criamos um dicionário para armazenar modelos por empresa
         model_dict = {}
         historico_dict = {}
 
-        # Vamos iterar sobre cada empresa distinta no conjunto de dados
         for empresa in self.df['Empresa'].unique():
             df_empresa = self.df[self.df['Empresa'] == empresa]
-
-            # Agrupamos a quantidade de viagens para cada ano, filtrado por empresa
             df_grouped = df_empresa.groupby('Ano')['Qtd_Viagens'].sum().reset_index()
-            
             x = df_grouped[['Ano']]
             y = df_grouped['Qtd_Viagens']
 
-            # Divisão dos dados para treinamento e teste
-            x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+            # Verifique o número de amostras antes de dividir
+            if len(df_grouped) > 1:
+                x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+            else:
+                x_train, y_train = x, y
+                x_test, y_test = x, y
+                print(f"Advertência: Apenas 1 ponto de dado disponível para a empresa {empresa}. Usando todos os dados para treinamento.")
 
-            # Treinamento do modelo de regressão linear
             model = LinearRegression()
             model.fit(x_train, y_train)
 
-            # Armazenamos o modelo treinado e o histórico das empresas
             model_dict[empresa] = model
             historico_dict[empresa] = df_grouped
 
@@ -164,7 +162,7 @@ class MachineLearning:
 
     def forecast_and_plot_by_company(self):
         model_dict, historico_dict = self.group_and_train_by_company()
-        
+
         plt.figure(figsize=(12, 8))
 
         for empresa, model in model_dict.items():
@@ -176,13 +174,10 @@ class MachineLearning:
             future_predictions = model.predict(proximo_ano)
             proximo_ano['Qtd_Viagens'] = future_predictions
 
-            # Concatenar previsões ao histórico
             historico = pd.concat([historico, proximo_ano], ignore_index=True)
 
-            # Linha do gráfico
             plt.plot(historico['Ano'], historico['Qtd_Viagens'], label=f'{empresa} (Histórico e Previsão)', marker='o')
 
-        # Configuração da exibição completa dos valores
         ax = plt.gca()
         ax.yaxis.set_major_formatter(mticker.StrMethodFormatter('{x:,.0f}'))
 
@@ -192,4 +187,4 @@ class MachineLearning:
         plt.legend()
         plt.grid(True)
         
-        return plt 
+        return plt
